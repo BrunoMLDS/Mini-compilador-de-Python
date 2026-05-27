@@ -107,5 +107,11 @@ fragment LETTER : [a-zA-Z] ;
 // Dígitos (Números de 0 a 9)
 fragment DIGIT : [0-9] ;
 
+// Para reconhecer números reais no código (ex: 10, 5, 42)
+NUMBER : DIGIT+ ;
+
+// Detetar a quebra de linha
+NEWLINE : '\r'? '\n' ;
+
 // WS -> skip (Ignorar espaços em branco, tabs e quebras de linha)
-WS : [ \t\r\n]+ -> skip ;
+WS : [ \t]+ -> skip ;
