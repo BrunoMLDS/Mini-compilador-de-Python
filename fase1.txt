@@ -1,0 +1,90 @@
+======================================================================
+FASE 1: PESQUISA DE OPERADORES E PALAVRAS-CHAVE (MINI COMPILADOR PYTHON)
+======================================================================
+
+1. SÍMBOLOS
+-----------
+
+1. Operadores Aritméticos:
+   +   : Adição
+   -   : Subtração
+   * : Multiplicação
+   /   : Divisão
+   //  : Divisão inteira
+   %   : Módulo (Resto da divisão)
+   ** : Exponenciação
+
+2. Operadores Relacionais:
+   ==  : Igual a
+   !=  : Diferente de
+   >   : Maior que
+   <   : Menor que
+   >=  : Maior ou igual a
+   <=  : Menor ou igual a
+
+3. Operadores Booleanos (Bitwise / Nível de Bits):
+   &   : E (Bitwise AND)
+   |   : OU (Bitwise OR)
+   ^   : XOR (Bitwise XOR)
+   ~   : NOT (Bitwise NOT)
+
+4. Símbolos de Atribuição:
+   =   : Atribuição simples
+   +=  : Adiciona e atribui
+   -=  : Subtrai e atribui
+   *=  : Multiplica e atribui
+   /=  : Divide e atribui
+
+5. Símbolos Identificadores de Tipos de Dados:
+   '   : Delimitador de String (Aspas simples)
+   "   : Delimitador de String (Aspas duplas)
+   [ ] : Identificador de Listas
+   { } : Identificador de Dicionários ou Conjuntos
+   ( ) : Identificador de Tuplos / Chamada de Funções
+
+6. Símbolo Identificador de Início de Bloco:
+   :   : Dois-pontos (Indica o início de um bloco indentado)
+
+
+2. PALAVRAS
+-----------
+
+1. Identificadora de Blocos:
+   if    : Condicional (Se)
+   elif  : Condicional alternativa (Senão se)
+   else  : Condicional padrão (Senão)
+   for   : Loop com contador / iteração (Para)
+   while : Loop condicional (Enquanto)
+   def   : Definição de nova função
+   class : Definição de nova classe
+
+2. Tipos de Dados:
+   int   : Número Inteiro
+   float : Número Decimal / Ponto Flutuante
+   str   : Texto / Cadeia de caracteres (String)
+   bool  : Valor Booleano (True / False)
+   list  : Coleção mutável ordenada (Lista)
+   dict  : Coleção de chave-valor (Dicionário)
+   tuple : Coleção imutável ordenada (Tuplo)
+
+3. Funções Built-in (Nativas):
+   print : Exibe informações no terminal
+   input : Lê dados inseridos pelo utilizador
+   len   : Retorna o tamanho / comprimento de um objeto
+   range : Cria uma sequência de números iterável
+   type  : Retorna o tipo de dado de um objeto
+
+4. Operadores Booleanos (Palavras-chave lógicas):
+   and   : Operador lógico E
+   or    : Operador lógico OU
+   not   : Operador lógico NÃO
+
+5. Demais (Palavras-chave diversas):
+   import : Importa módulos ou bibliotecas
+   from   : Especifica a origem de uma importação específica
+   in     : Verifica se um valor existe numa sequência
+   as     : Cria um pseudónimo (alias) para um módulo
+   return : Finaliza uma função e retorna um valor
+   pass   : Declaração nula (usada para preencher blocos vazios)
+   break  : Interrompe e sai do loop atual
+   continue: Salta para a próxima iteração do loop
