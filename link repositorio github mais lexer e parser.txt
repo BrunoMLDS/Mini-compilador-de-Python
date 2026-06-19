@@ -1,0 +1,191 @@
+repositório: https://github.com/BrunoMLDS/Mini-compilador-de-Python
+
+lexer: 
+
+lexer grammar PythonLexer;
+
+// ==========================================
+// OPERADORES E SÍMBOLOS
+// ==========================================
+
+PLUS     : '+' ;
+MINUS    : '-' ;
+MULT     : '*' ;
+DIV      : '/' ;
+IDIV     : '//' ;
+MOD      : '%' ;
+POW      : '**' ;
+
+EQ       : '==' ;
+NEQ      : '!=' ;
+GT       : '>' ;
+LT       : '<' ;
+GTE      : '>=' ;
+LTE      : '<=' ;
+
+BIT_AND  : '&' ;
+BIT_OR   : '|' ;
+BIT_XOR  : '^' ;
+BIT_NOT  : '~' ;
+
+ASSIGN   : '=' ;
+ADD_ASSIGN  : '+=' ;
+SUB_ASSIGN  : '-=' ;
+MULT_ASSIGN : '*=' ;
+DIV_ASSIGN  : '/=' ;
+
+SQUOTE   : '\'' ;
+DQUOTE   : '"' ;
+LBRACK   : '[' ;
+RBRACK   : ']' ;
+LBRACE   : '{' ;
+RBRACE   : '}' ;
+LPAREN   : '(' ;
+RPAREN   : ')' ;
+COLON    : ':' ;
+COMMA    : ',' ; // <- NOVO: Necessário para separar elementos de listas/dicts
+
+// ==========================================
+// PALAVRAS-CHAVE (KEYWORDS)
+// ==========================================
+
+IF       : 'if' ;
+ELIF     : 'elif' ;
+ELSE     : 'else' ;
+FOR      : 'for' ;
+WHILE    : 'while' ;
+DEF      : 'def' ;
+CLASS    : 'class' ;
+
+INT_TYPE   : 'int' ;
+FLOAT_TYPE : 'float' ;
+STR_TYPE   : 'str' ;
+BOOL_TYPE  : 'bool' ;
+LIST_TYPE  : 'list' ;
+DICT_TYPE  : 'dict' ;
+TUPLE_TYPE : 'tuple' ;
+
+PRINT    : 'print' ;
+INPUT    : 'input' ;
+LEN      : 'len' ;
+RANGE    : 'range' ;
+TYPE     : 'type' ;
+
+AND      : 'and' ;
+OR       : 'or' ;
+NOT      : 'not' ;
+
+IMPORT   : 'import' ;
+FROM     : 'from' ;
+IN       : 'in' ;
+AS       : 'as' ;
+RETURN   : 'return' ;
+PASS     : 'pass' ;
+BREAK    : 'break' ;
+CONTINUE : 'continue' ;
+
+TRUE     : 'True' ;
+FALSE    : 'False' ;
+
+// ==========================================
+// REGRAS ESTRUTURAIS FINAIS
+// ==========================================
+
+ID : (LETTER | '_') (LETTER | DIGIT | '_')* ;
+NUMBER : DIGIT+ ;
+
+// NOVO: Padrão STRING (aceita aspas duplas ou simples e texto lá dentro)
+STRING : '"' (~["\r\n])* '"' | '\'' (~['\r\n])* '\'' ;
+
+fragment LETTER : [a-zA-Z] ;
+fragment DIGIT : [0-9] ;
+
+NEWLINE : '\r'? '\n' ;
+WS : [ \t]+ -> skip ;
+
+
+
+parser:
+
+parser grammar PythonParser;
+
+options { tokenVocab=PythonLexer; }
+
+// 1. Regra inicial ajustada com uma regra genérica de comandos
+code
+    : command* EOF
+    ;
+
+// Regra auxiliar que define o que pode aparecer no fluxo do código
+command
+    : stat
+    | condicional
+    | loop_while
+    | loop_for
+    | func
+    ;
+
+// 2. Linhas isoladas simples
+stat
+    : (expr | query) NEWLINE
+    | NEWLINE
+    ;
+
+// 3. Estrutura Condicional
+condicional
+    : IF query COLON NEWLINE command+ (ELIF query COLON NEWLINE command+)* (ELSE COLON NEWLINE command+)?
+    ;
+
+// 4. Estruturas de Repetição
+loop_while
+    : WHILE query COLON NEWLINE command+                        # whileLoopRule
+    ;
+
+loop_for
+    : FOR ID IN expr COLON NEWLINE command+                     # forLoopRule
+    ;
+
+// 5. Funções
+func
+    : DEF ID LPAREN RPAREN COLON NEWLINE command+               # definicaoFuncaoRule
+    ;
+
+func_call
+    : (ID | PRINT) LPAREN RPAREN                                # chamadaFuncaoRule
+    ;
+
+// 6. Expressões Matemáticas, Atribuição e Estruturas de Dados (Fase 8)
+expr
+    : ID ASSIGN expr                          # atribuicaoRule
+    | func_call                               # chamadaFuncaoNaExprRule
+    | ID                                      # idsRule
+    | NUMBER                                  # numerosRule
+    | STRING                                  # stringRule
+    | LBRACK elements? RBRACK                 # listaRule
+    | LPAREN elements? RPAREN                 # tuplaRule
+    | LBRACE elements? RBRACE                 # setRule
+    | LBRACE dict_elements? RBRACE            # dictionaryRule
+    | expr (PLUS | MINUS | MULT | DIV) expr   # operacoesComExpressoesRule
+    | LPAREN expr RPAREN                      # expressoesEntreParentesesRule
+    ;
+
+// REGRAS AUXILIARES PARA COLECÕES (Tratam as vírgulas e elementos de forma limpa)
+elements
+    : expr (COMMA expr)*
+    ;
+
+dict_elements
+    : dict_pair (COMMA dict_pair)*
+    ;
+
+dict_pair
+    : expr COLON expr
+    ;
+
+// 7. Queries Booleanas / Lógica
+query
+    : (TRUE | FALSE)                               # valoresBooleanosRule
+    | query (AND | OR) query                       # operacoesBooleanasRule
+    | LPAREN query RPAREN                          # queryEntreParentesesRule
+    | expr (EQ | NEQ | GT | LT | GTE | LTE) expr   # relacoesEntreExpressoesRule
+    ;
