@@ -41,19 +41,36 @@ func
     : DEF ID LPAREN RPAREN COLON NEWLINE command+               # definicaoFuncaoRule
     ;
 
-// ATUALIZADO: Aceita 'ID()' ou 'print()'
 func_call
     : (ID | PRINT) LPAREN RPAREN                                # chamadaFuncaoRule
     ;
 
-// 6. Expressões Matemáticas e Atribuição
+// 6. Expressões Matemáticas, Atribuição e Estruturas de Dados (Fase 8)
 expr
     : ID ASSIGN expr                          # atribuicaoRule
     | func_call                               # chamadaFuncaoNaExprRule
     | ID                                      # idsRule
     | NUMBER                                  # numerosRule
+    | STRING                                  # stringRule
+    | LBRACK elements? RBRACK                 # listaRule
+    | LPAREN elements? RPAREN                 # tuplaRule
+    | LBRACE elements? RBRACE                 # setRule
+    | LBRACE dict_elements? RBRACE            # dictionaryRule
     | expr (PLUS | MINUS | MULT | DIV) expr   # operacoesComExpressoesRule
     | LPAREN expr RPAREN                      # expressoesEntreParentesesRule
+    ;
+
+// REGRAS AUXILIARES PARA COLECÕES (Tratam as vírgulas e elementos de forma limpa)
+elements
+    : expr (COMMA expr)*
+    ;
+
+dict_elements
+    : dict_pair (COMMA dict_pair)*
+    ;
+
+dict_pair
+    : expr COLON expr
     ;
 
 // 7. Queries Booleanas / Lógica
