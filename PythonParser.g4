@@ -2,38 +2,48 @@ parser grammar PythonParser;
 
 options { tokenVocab=PythonLexer; }
 
-// 1. Regra inicial atualizada com as funções, o while e agora o for
+// 1. Regra inicial ajustada com uma regra genérica de comandos
 code
-    : (stat | condicional | func | func_call | loop_while | loop_for)* EOF
+    : command* EOF
     ;
 
-// 2. Linhas isoladas
+// Regra auxiliar que define o que pode aparecer no fluxo do código
+command
+    : stat
+    | condicional
+    | loop_while
+    | loop_for
+    | func
+    ;
+
+// 2. Linhas isoladas simples
 stat
     : (expr | query) NEWLINE
     | NEWLINE
     ;
 
-// 3. Estrutura Condicional (Fase 5)
+// 3. Estrutura Condicional
 condicional
-    : IF query COLON NEWLINE stat+ (ELIF query COLON NEWLINE stat+)* (ELSE COLON NEWLINE stat+)?
+    : IF query COLON NEWLINE command+ (ELIF query COLON NEWLINE command+)* (ELSE COLON NEWLINE command+)?
     ;
 
-// 4. Estruturas de Repetição (Fases 6.5 e 6.75)
+// 4. Estruturas de Repetição
 loop_while
-    : WHILE query COLON NEWLINE stat+                           # whileLoopRule
+    : WHILE query COLON NEWLINE command+                        # whileLoopRule
     ;
 
 loop_for
-    : FOR ID IN expr COLON NEWLINE stat+                        # forLoopRule
+    : FOR ID IN expr COLON NEWLINE command+                     # forLoopRule
     ;
 
-// 5. Funções (Fase 6)
+// 5. Funções
 func
-    : DEF ID LPAREN RPAREN COLON NEWLINE stat+                  # definicaoFuncaoRule
+    : DEF ID LPAREN RPAREN COLON NEWLINE command+               # definicaoFuncaoRule
     ;
 
+// ATUALIZADO: Aceita 'ID()' ou 'print()'
 func_call
-    : ID LPAREN RPAREN                                          # chamadaFuncaoRule
+    : (ID | PRINT) LPAREN RPAREN                                # chamadaFuncaoRule
     ;
 
 // 6. Expressões Matemáticas e Atribuição
